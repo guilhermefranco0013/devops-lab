@@ -1,54 +1,137 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teste Deploy NGINX</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NGINX CI/CD Test Dashboard</title>
+
   <style>
     body {
       margin: 0;
-      height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: white;
-      text-align: center;
+      min-height: 100vh;
     }
 
-    .box {
-      padding: 30px;
+    .container {
+      width: 90%;
+      max-width: 900px;
+      background: #111827;
       border-radius: 12px;
-      background: rgba(0, 0, 0, 0.3);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     h1 {
       margin: 0;
-      font-size: 2.2rem;
+      font-size: 2rem;
+      color: #38bdf8;
     }
 
-    p {
+    .status {
       margin-top: 10px;
-      font-size: 1.1rem;
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: #22c55e;
+      font-weight: bold;
+      color: #0b1220;
     }
 
-    .badge {
-      margin-top: 15px;
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 6px;
-      background: #00c853;
-      font-size: 0.9rem;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #374151;
+    }
+
+    .label {
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .value {
+      font-size: 1.1rem;
+      margin-top: 5px;
+      font-weight: bold;
+    }
+
+    pre {
+      background: #0b1220;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      margin-top: 10px;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: #64748b;
+      text-align: center;
     }
   </style>
 </head>
+
 <body>
-  <div class="box">
-    <h1>🚀 Deploy OK!</h1>
-    <p>Seu NGINX via Docker está funcionando corretamente.</p>
-    <div class="badge">CI/CD Test Success</div>
+  <div class="container">
+    <h1>🚀 NGINX CI/CD Test Dashboard</h1>
+
+    <div class="status">DEPLOY OK</div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Container Status</div>
+        <div class="value">Running</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Web Server</div>
+        <div class="value">NGINX</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Environment</div>
+        <div class="value">Docker</div>
+      </div>
+
+      <div class="card">
+        <div class="label">CI/CD Pipeline</div>
+        <div class="value">GitHub Actions</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:15px;">
+      <div class="label">Runtime Diagnostics</div>
+      <pre id="diag"></pre>
+    </div>
+
+    <footer>
+      DevOps Lab - NGINX Docker Test | Build validation page
+    </footer>
   </div>
+
+  <script>
+    const info = {
+      time: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      url: window.location.href,
+      status: "OK"
+    };
+
+    document.getElementById("diag").textContent = JSON.stringify(info, null, 2);
+  </script>
 </body>
 </html>
