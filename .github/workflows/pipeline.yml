@@ -16,7 +16,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
 
       - name: Build image
-        run: docker build -t guilhermefranco0013/devops-lab:web ./web
+        run: docker build -t guifranco/devops-lab:web ./web
 
       - name: Push image
-        run: docker push guilhermefranco0013/devops-lab:web
+        run: docker push guifranco/devops-lab:web

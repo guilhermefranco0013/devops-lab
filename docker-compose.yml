@@ -15,7 +15,7 @@ services:
       - web
 
   web:
-    build: ./web
+    image: guifranco/devops-lab:web
     container_name: web-app
     expose:
       - "80"
