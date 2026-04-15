@@ -13,12 +13,14 @@ services:
       - ./nginx/certs:/etc/nginx/certs
     depends_on:
       - web
+    restart: always
 
   web:
     image: guifranco/devops-lab:web
     container_name: web-app
     expose:
       - "80"
+    restart: always
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost"]
       interval: 30s
@@ -35,6 +37,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - zabbix-db-data:/var/lib/mysql
+    restart: always
 
   zabbix-server:
     image: zabbix/zabbix-server-mysql:6.4-latest
@@ -48,32 +51,7 @@ services:
       - zabbix-db
     ports:
       - "10051:10051"
-
-  zabbix-web:
-    image: zabbix/zabbix-web-nginx-mysql:6.4-latest
-    container_name: zabbix-web
-    env_file:
-      - .env
-    environment:
-      DB_SERVER_HOST: ${ZBX_DB_HOST}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      ZBX_SERVER_HOST: ${ZBX_SERVER_HOST}
-    ports:
-      - "8080:8080"
-
-  zabbix-agent:
-    image: zabbix/zabbix-agent:6.4-latest
-    container_name: zabbix-agent
-    env_file:
-      - .env
-    depends_on:
-      - zabbix-server
-
-  grafana:
-    image: grafana/grafana:10.4.0
-    container_name: grafana
-    ports:
-      - "3000:3000"
+    restart: always
 
 volumes:
   zabbix-db-data:
