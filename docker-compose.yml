@@ -1,0 +1,79 @@
+version: '3.9'
+
+services:
+
+  nginx:
+    image: nginx:1.25
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/certs:/etc/nginx/certs
+    depends_on:
+      - web
+
+  web:
+    build: ./web
+    container_name: web-app
+    expose:
+      - "80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  zabbix-db:
+    image: mysql:8.0
+    container_name: zabbix-db
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - zabbix-db-data:/var/lib/mysql
+
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:6.4-latest
+    container_name: zabbix-server
+    env_file:
+      - .env
+    environment:
+      DB_SERVER_HOST: ${ZBX_DB_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - zabbix-db
+    ports:
+      - "10051:10051"
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:6.4-latest
+    container_name: zabbix-web
+    env_file:
+      - .env
+    environment:
+      DB_SERVER_HOST: ${ZBX_DB_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      ZBX_SERVER_HOST: ${ZBX_SERVER_HOST}
+    ports:
+      - "8080:8080"
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent:6.4-latest
+    container_name: zabbix-agent
+    env_file:
+      - .env
+    depends_on:
+      - zabbix-server
+
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+
+volumes:
+  zabbix-db-data:
