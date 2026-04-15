@@ -1,8 +1,9 @@
 FROM nginx:alpine
 
-RUN apk add --no-cache git ca-certificates
+# remove default nginx html
+RUN rm -rf /usr/share/nginx/html/*
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# copia site do repo para nginx
+COPY site/ /usr/share/nginx/html/
 
-ENTRYPOINT ["/entrypoint.sh"]
+EXPOSE 80

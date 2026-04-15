@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Login Docker Hub
         run: echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
 
-      - name: Build image
-        run: docker build -t guifranco/devops-lab:web .
+      - name: Build Docker image (clean)
+        run: docker build --no-cache -t guifranco/devops-lab:web .
 
-      - name: Push image
+      - name: Push Docker image
         run: docker push guifranco/devops-lab:web
