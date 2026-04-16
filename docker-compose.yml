@@ -1,14 +1,15 @@
-services:
+-services:
 
   nginx:
-    image: nginx:1.25
+    build: .
     container_name: nginx-proxy
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/certs:/etc/nginx/certs
+      - nginx-cache:/var/cache/nginx
+      - nginx-run:/var/run
+      - nginx-logs:/var/log/nginx
     depends_on:
       - web
     restart: always
@@ -54,7 +55,12 @@ services:
 volumes:
   zabbix-db-data:
     name: zabbix-db-data
-  nginx-conf:
-    name: nginx-conf
-  nginx-certs:
-    name: nginx-certs
+
+  nginx-cache:
+    name: nginx-cache
+
+  nginx-run:
+    name: nginx-run
+
+  nginx-logs:
+    name: nginx-logs
