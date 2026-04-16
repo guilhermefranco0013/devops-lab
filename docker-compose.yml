@@ -1,20 +1,17 @@
 services:
 
   nginx:
-  build: .
-  container_name: nginx-proxy
-  ports:
-    - "80:80"
-    - "443:443"
-  volumes:
-    - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-    - ./nginx/certs:/etc/nginx/certs
-    - nginx-cache:/var/cache/nginx
-    - nginx-run:/var/run
-    - nginx-logs:/var/log/nginx
-  depends_on:
-    - web
-  restart: always
+    image: nginx:1.25
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/certs:/etc/nginx/certs
+    depends_on:
+      - web
+    restart: always
 
   web:
     image: guifranco/devops-lab:web
@@ -53,16 +50,3 @@ services:
     ports:
       - "10051:10051"
     restart: always
-
-volumes:
-  zabbix-db-data:
-    name: zabbix-db-data
-
-  nginx-cache:
-    name: nginx-cache
-
-  nginx-run:
-    name: nginx-run
-
-  nginx-logs:
-    name: nginx-logs

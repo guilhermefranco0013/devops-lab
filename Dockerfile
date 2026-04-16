@@ -1,15 +1,9 @@
 FROM nginx:alpine
 
-# remove conteúdo padrão
+# remove default nginx html
 RUN rm -rf /usr/share/nginx/html/*
 
-# copia site
+# copia site do repo para nginx
 COPY site/ /usr/share/nginx/html/
-
-# garante diretórios usados pelo nginx
-RUN mkdir -p /var/cache/nginx /var/run /var/log/nginx
-
-# define permissões (evita problemas em runtime)
-RUN chmod -R 755 /var/cache/nginx /var/run /var/log/nginx
 
 EXPOSE 80
