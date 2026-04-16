@@ -53,3 +53,8 @@ services:
 
 volumes:
   zabbix-db-data:
+    name: zabbix-db-data
+  nginx-conf:
+    name: nginx-conf
+  nginx-certs:
+    name: nginx-certs
