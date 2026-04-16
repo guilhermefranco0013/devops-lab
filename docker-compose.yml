@@ -1,18 +1,20 @@
 services:
 
   nginx:
-    build: .
-    container_name: nginx-proxy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - nginx-cache:/var/cache/nginx
-      - nginx-run:/var/run
-      - nginx-logs:/var/log/nginx
-    depends_on:
-      - web
-    restart: always
+  build: .
+  container_name: nginx-proxy
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    - ./nginx/certs:/etc/nginx/certs
+    - nginx-cache:/var/cache/nginx
+    - nginx-run:/var/run
+    - nginx-logs:/var/log/nginx
+  depends_on:
+    - web
+  restart: always
 
   web:
     image: guifranco/devops-lab:web
