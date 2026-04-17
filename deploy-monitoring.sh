@@ -2,7 +2,7 @@
 
 echo "🚀 Deploy Monitoring"
 
-docker compose -f docker-compose.monitoring.yml pull
-docker compose -f docker-compose.monitoring.yml up -d
+docker compose -p monitoring -f docker-compose.monitoring.yml pull
+docker compose -p monitoring -f docker-compose.monitoring.yml up -d
 
 echo "✅ Monitoring atualizado!"
