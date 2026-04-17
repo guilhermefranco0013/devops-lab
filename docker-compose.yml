@@ -42,6 +42,10 @@ services:
     container_name: zabbix-server
     env_file:
       - .env
+    volumes:
+      - zabbix-server-data:/var/lib/zabbix
+      - zabbix-alertscripts:/usr/lib/zabbix/alertscripts
+      - zabbix-externalscripts:/usr/lib/zabbix/externalscripts
     environment:
       DB_SERVER_HOST: ${ZBX_DB_HOST}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -53,3 +57,6 @@ services:
 
 volumes:
   zabbix-db-data:
+  zabbix-server-data:
+  zabbix-alertscripts:
+  zabbix-externalscripts:
