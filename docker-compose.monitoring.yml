@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+
+  zabbix-db:
+    image: mysql:8.0
+    container_name: zabbix-db
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: zabbix
+    volumes:
+      - zabbix-db-data:/var/lib/mysql
+    restart: always
+
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:ubuntu-6.4.0
+    container_name: zabbix-server
+    env_file:
+      - .env
+    environment:
+      DB_SERVER_HOST: zabbix-db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - zabbix-db
+    ports:
+      - "10051:10051"
+    volumes:
+      - zabbix-server-data:/var/lib/zabbix
+    restart: always
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.0
+    container_name: zabbix-web
+    env_file:
+      - .env
+    environment:
+      DB_SERVER_HOST: zabbix-db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      ZBX_SERVER_HOST: zabbix-server
+      PHP_TZ: America/Sao_Paulo
+    depends_on:
+      - zabbix-server
+      - zabbix-db
+    ports:
+      - "8080:8080"   # não conflita com nginx
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: always
+
+volumes:
+  zabbix-db-data:
+  zabbix-server-data:
+  grafana-data:

@@ -24,39 +24,3 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-
-  zabbix-db:
-    image: mysql:8.0
-    container_name: zabbix-db
-    env_file:
-      - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-    volumes:
-      - zabbix-db-data:/var/lib/mysql
-    restart: always
-
-  zabbix-server:
-    image: zabbix/zabbix-server-mysql:ubuntu-6.4.0
-    container_name: zabbix-server
-    env_file:
-      - .env
-    volumes:
-      - zabbix-server-data:/var/lib/zabbix
-      - zabbix-alertscripts:/usr/lib/zabbix/alertscripts
-      - zabbix-externalscripts:/usr/lib/zabbix/externalscripts
-    environment:
-      DB_SERVER_HOST: ${ZBX_DB_HOST}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    depends_on:
-      - zabbix-db
-    ports:
-      - "10051:10051"
-    restart: always
-
-volumes:
-  zabbix-db-data:
-  zabbix-server-data:
-  zabbix-alertscripts:
-  zabbix-externalscripts:
