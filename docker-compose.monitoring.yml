@@ -1,10 +1,7 @@
-version: "3.9"
-
 services:
 
   zabbix-db:
     image: mysql:8.0
-    container_name: zabbix-db
     env_file:
       - .env
     environment:
@@ -16,11 +13,12 @@ services:
 
   zabbix-server:
     image: zabbix/zabbix-server-mysql:ubuntu-6.4.0
-    container_name: zabbix-server
     env_file:
       - .env
     environment:
       DB_SERVER_HOST: zabbix-db
+      MYSQL_DATABASE: zabbix
+      MYSQL_USER: zabbix
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
       - zabbix-db
@@ -32,11 +30,12 @@ services:
 
   zabbix-web:
     image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.0
-    container_name: zabbix-web
     env_file:
       - .env
     environment:
       DB_SERVER_HOST: zabbix-db
+      MYSQL_DATABASE: zabbix
+      MYSQL_USER: zabbix
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       ZBX_SERVER_HOST: zabbix-server
       PHP_TZ: America/Sao_Paulo
@@ -49,7 +48,6 @@ services:
 
   grafana:
     image: grafana/grafana:latest
-    container_name: grafana
     ports:
       - "3000:3000"
     volumes:

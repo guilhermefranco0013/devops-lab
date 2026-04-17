@@ -2,7 +2,6 @@ services:
 
   nginx:
     image: nginx:1.25
-    container_name: nginx-proxy
     ports:
       - "80:80"
       - "443:443"
@@ -15,7 +14,6 @@ services:
 
   web:
     image: guifranco/devops-lab:web
-    container_name: web-app
     expose:
       - "80"
     restart: always
