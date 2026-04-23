@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,11 +18,32 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
-      - name: Build Docker image
+      - name: Build image
         run: docker build -t guifranco/devops-lab:web .
 
-      - name: Push Docker images
+      - name: Push image
         run: |
           docker push guifranco/devops-lab:web
           docker tag guifranco/devops-lab:web guifranco/devops-lab:latest
           docker push guifranco/devops-lab:latest
+
+      # 🚀 Deploy remoto via SSH
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/devops-lab
+
+            echo "📥 Atualizando repo..."
+            git pull
+
+            echo "🚀 Deploy app..."
+            chmod +x deploy.sh
+            ./deploy.sh
+
+            echo "📊 Deploy monitoring..."
+            chmod +x deploy-monitoring.sh
+            ./deploy-monitoring.sh
