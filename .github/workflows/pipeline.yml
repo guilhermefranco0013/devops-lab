@@ -11,7 +11,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
 
       - name: Login Docker Hub
         uses: docker/login-action@v3
@@ -28,7 +27,23 @@ jobs:
           docker tag guifranco/devops-lab:web guifranco/devops-lab:latest
           docker push guifranco/devops-lab:latest
 
-      # 🚀 Deploy remoto via SSH
+      # 🔵 INSTALA TAILSCALE
+      - name: Install Tailscale
+        run: |
+          curl -fsSL https://tailscale.com/install.sh | sh
+
+      # 🔵 CONECTA NA VPN
+      - name: Connect to Tailscale
+        run: |
+          sudo tailscale up --authkey ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      # 🔍 (opcional, mas recomendo pra debug)
+      - name: Test connectivity
+        run: |
+          tailscale ip
+          ping -c 4 100.125.200.108
+
+      # 🚀 Deploy remoto via SSH (AGORA FUNCIONA)
       - name: Deploy on server
         uses: appleboy/ssh-action@v1.0.3
         with:
