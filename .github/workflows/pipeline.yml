@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, infra-dev]
+    runs-on: [self-hosted, Linux, infra-dev]
 
     concurrency:
       group: deploy
