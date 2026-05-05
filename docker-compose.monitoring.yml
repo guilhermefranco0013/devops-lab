@@ -62,7 +62,3 @@ services:
       interval: 30s
       retries: 5
 
-volumes:
-  zabbix-db-data:
-  zabbix-server-data:
-  grafana-data:
