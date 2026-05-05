@@ -61,8 +61,3 @@ services:
       test: ["CMD-SHELL", "wget -qO- http://localhost:3000 || exit 1"]
       interval: 30s
       retries: 5
-
-volumes:
-  zabbix-db-data:
-  zabbix-server-data:
-  grafana-data:
