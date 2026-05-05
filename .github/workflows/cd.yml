@@ -1,0 +1,28 @@
+name: CD
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, Linux, infra-dev]
+
+    environment:
+      name: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build & Push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: |
+            guifranco/devops-lab:web-${{ github.sha }}
+            guifranco/devops-lab:web-prod
+
+      - name: Deploy
+        run: |
+          cd ~/devops-lab
+          ./deploy.sh web-${{ github.sha }}

@@ -1,7 +1,7 @@
 services:
 
   zabbix-db:
-    image: mysql:8.0
+    image: mysql:8.0.36
     env_file:
       - .env
     environment:
@@ -10,6 +10,10 @@ services:
     volumes:
       - zabbix-db-data:/var/lib/mysql
     restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
 
   zabbix-server:
     image: zabbix/zabbix-server-mysql:ubuntu-6.4.0
@@ -43,16 +47,20 @@ services:
       - zabbix-server
       - zabbix-db
     ports:
-      - "8080:8080"   # não conflita com nginx
+      - "8080:8080"
     restart: always
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:10.4.2
     ports:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000 || exit 1"]
+      interval: 30s
+      retries: 5
 
 volumes:
   zabbix-db-data:

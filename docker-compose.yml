@@ -1,7 +1,6 @@
 services:
-
   nginx:
-    image: nginx:1.25
+    image: nginx:1.25-alpine
     ports:
       - "80:80"
       - "443:443"
@@ -13,12 +12,12 @@ services:
     restart: always
 
   web:
-    image: guifranco/devops-lab:web
+    image: guifranco/devops-lab:${IMAGE_TAG}
     expose:
       - "80"
     restart: always
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
