@@ -137,4 +137,4 @@ jobs:
             -f ~/devops-lab/docker-compose.monitoring.yml \
             -p monitoring \
             logs --tail=100
-            # monitoring pipeline test
+            # monitoring pipeline test deinitive
