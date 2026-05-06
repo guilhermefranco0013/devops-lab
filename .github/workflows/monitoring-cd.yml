@@ -15,7 +15,6 @@ on:
       - "docker-compose.monitoring.yml"
       - "grafana/**"
       - "zabbix/**"
-      - "nginx/**"
       - ".github/workflows/monitoring-cd.yml"
 
 permissions:
@@ -27,7 +26,7 @@ jobs:
 
     runs-on: [self-hosted, Linux, infra-dev]
 
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     environment:
       name: production
@@ -82,23 +81,38 @@ jobs:
 
           ./deploy-monitoring.sh
 
-      - name: Validate monitoring containers
+      - name: Wait for MySQL healthy
         shell: bash
         run: |
           set -euo pipefail
 
-          docker compose \
-            -f ~/devops-lab/docker-compose.monitoring.yml \
-            -p monitoring \
-            ps
+          timeout 180 bash -c '
+            until [ "$(docker inspect -f "{{.State.Health.Status}}" monitoring-zabbix-db-1)" = "healthy" ]; do
+              echo "Waiting MySQL..."
+              sleep 5
+            done
+          '
+
+      - name: Wait for Zabbix Server
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          timeout 180 bash -c '
+            until docker exec monitoring-zabbix-server-1 pgrep zabbix_server > /dev/null; do
+              echo "Waiting Zabbix Server..."
+              sleep 5
+            done
+          '
 
       - name: Check Grafana health
         shell: bash
         run: |
           set -euo pipefail
 
-          timeout 60 bash -c '
+          timeout 180 bash -c '
             until curl -fsS http://localhost:3000/api/health > /dev/null; do
+              echo "Waiting Grafana..."
               sleep 5
             done
           '
@@ -108,11 +122,22 @@ jobs:
         run: |
           set -euo pipefail
 
-          timeout 60 bash -c '
+          timeout 240 bash -c '
             until curl -fsS http://localhost:8080 > /dev/null; do
+              echo "Waiting Zabbix Frontend..."
               sleep 5
             done
           '
+
+      - name: Validate monitoring containers
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker compose \
+            -f ~/devops-lab/docker-compose.monitoring.yml \
+            -p monitoring \
+            ps
 
       - name: Cleanup dangling images
         shell: bash
@@ -137,5 +162,4 @@ jobs:
           docker compose \
             -f ~/devops-lab/docker-compose.monitoring.yml \
             -p monitoring \
-            logs --tail=100
-            # monitoring pipeline test deinitive
+            logs --tail=200
