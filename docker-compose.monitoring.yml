@@ -56,6 +56,11 @@ services:
       - zabbix-server-data:/var/lib/zabbix
 
     restart: unless-stopped
+
+    networks:
+      - monitoring
+
+
   zabbix-web:
     image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.0
 
@@ -76,7 +81,7 @@ services:
         condition: service_healthy
 
       zabbix-server:
-        condition: service_healthy
+        condition: service_started
 
     ports:
       - "8080:8080"
