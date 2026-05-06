@@ -2,63 +2,118 @@ services:
 
   zabbix-db:
     image: mysql:8.0.36
+
     env_file:
       - .env
+
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: zabbix
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
     volumes:
       - zabbix-db-data:/var/lib/mysql
-    restart: always
+
+    restart: unless-stopped
+
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
+      timeout: 5s
       retries: 5
+
+    networks:
+      - monitoring
+
 
   zabbix-server:
     image: zabbix/zabbix-server-mysql:ubuntu-6.4.0
+
     env_file:
       - .env
+
     environment:
       DB_SERVER_HOST: zabbix-db
-      MYSQL_DATABASE: zabbix
-      MYSQL_USER: zabbix
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
     depends_on:
-      - zabbix-db
+      zabbix-db:
+        condition: service_healthy
+
     ports:
       - "10051:10051"
+
     volumes:
       - zabbix-server-data:/var/lib/zabbix
-    restart: always
+
+    restart: unless-stopped
+
+    networks:
+      - monitoring
+
 
   zabbix-web:
     image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.0
+
     env_file:
       - .env
+
     environment:
       DB_SERVER_HOST: zabbix-db
-      MYSQL_DATABASE: zabbix
-      MYSQL_USER: zabbix
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       ZBX_SERVER_HOST: zabbix-server
       PHP_TZ: America/Sao_Paulo
+
     depends_on:
-      - zabbix-server
-      - zabbix-db
+      zabbix-db:
+        condition: service_healthy
+
+      zabbix-server:
+        condition: service_started
+
     ports:
       - "8080:8080"
-    restart: always
+
+    restart: unless-stopped
+
+    networks:
+      - monitoring
+
 
   grafana:
     image: grafana/grafana:10.4.2
+
     ports:
       - "3000:3000"
+
     volumes:
       - grafana-data:/var/lib/grafana
-    restart: always
+
+    restart: unless-stopped
+
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3000 || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
       interval: 30s
+      timeout: 5s
       retries: 5
 
+    networks:
+      - monitoring
+
+
+volumes:
+  zabbix-db-data:
+  zabbix-server-data:
+  grafana-data:
+
+
+networks:
+  monitoring:
+    driver: bridge
