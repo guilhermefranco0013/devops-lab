@@ -92,19 +92,6 @@ jobs:
               sleep 5
             done
           '
-
-      - name: Wait for Zabbix Server
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          timeout 180 bash -c '
-            until docker exec monitoring-zabbix-server-1 pgrep zabbix_server > /dev/null; do
-              echo "Waiting Zabbix Server..."
-              sleep 5
-            done
-          '
-
       - name: Check Grafana health
         shell: bash
         run: |
