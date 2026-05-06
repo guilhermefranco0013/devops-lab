@@ -1,0 +1,139 @@
+name: Monitoring CD
+
+concurrency:
+  group: monitoring-production
+  cancel-in-progress: false
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+
+    paths:
+      - "docker-compose.monitoring.yml"
+      - "grafana/**"
+      - "zabbix/**"
+      - "nginx/**"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-monitoring:
+    name: Deploy Monitoring Stack
+
+    runs-on: [self-hosted, Linux, infra-dev]
+
+    timeout-minutes: 15
+
+    environment:
+      name: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker daemon
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker info > /dev/null
+
+      - name: Check disk space
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          df -h
+
+      - name: Validate Docker Compose syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cd ~/devops-lab
+
+          docker compose \
+            -f docker-compose.monitoring.yml \
+            config > /dev/null
+
+      - name: Pull latest monitoring images
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cd ~/devops-lab
+
+          docker compose \
+            -f docker-compose.monitoring.yml \
+            -p monitoring \
+            pull
+
+      - name: Deploy monitoring stack
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cd ~/devops-lab
+
+          ./deploy-monitoring.sh
+
+      - name: Validate monitoring containers
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker compose \
+            -f ~/devops-lab/docker-compose.monitoring.yml \
+            -p monitoring \
+            ps
+
+      - name: Check Grafana health
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          timeout 60 bash -c '
+            until curl -fsS http://localhost:3000/api/health > /dev/null; do
+              sleep 5
+            done
+          '
+
+      - name: Check Zabbix frontend
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          timeout 60 bash -c '
+            until curl -fsS http://localhost:8080 > /dev/null; do
+              sleep 5
+            done
+          '
+
+      - name: Cleanup dangling images
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker image prune -f
+
+      - name: Show monitoring status
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+      - name: Show logs on failure
+        if: failure()
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker compose \
+            -f ~/devops-lab/docker-compose.monitoring.yml \
+            -p monitoring \
+            logs --tail=100
