@@ -1,7 +1,7 @@
 services:
 
   zabbix-db:
-    image: mysql:8.0.36
+    image: mysql:8.4.6
 
     env_file:
       - .env
@@ -56,18 +56,6 @@ services:
       - zabbix-server-data:/var/lib/zabbix
 
     restart: unless-stopped
-
-    healthcheck:
-      test: ["CMD", "pgrep", "zabbix_server"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
-
-    networks:
-      - monitoring
-
-
   zabbix-web:
     image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.0
 
