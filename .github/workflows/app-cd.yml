@@ -2,7 +2,15 @@ name: CD
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+
+    paths:
+      - "site/**"
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - "nginx/**"
+      - ".github/workflows/app-cd.yml"
 
 jobs:
   deploy:

@@ -16,6 +16,7 @@ on:
       - "grafana/**"
       - "zabbix/**"
       - "nginx/**"
+      - ".github/workflows/monitoring-cd.yml"
 
 permissions:
   contents: read
