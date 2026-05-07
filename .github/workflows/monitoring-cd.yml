@@ -157,4 +157,4 @@ jobs:
             -f ~/devops-lab/docker-compose.monitoring.yml \
             -p monitoring \
             logs --tail=200
-            #Teste deploy com falha para verificar se os logs estão sendo exibidos corretamente.
+            

@@ -54,6 +54,10 @@ services:
 
     volumes:
       - zabbix-server-data:/var/lib/zabbix
+      - zabbix-alertscripts:/usr/lib/zabbix/alertscripts
+      - zabbix-externalscripts:/usr/lib/zabbix/externalscripts
+      - zabbix-export:/var/lib/zabbix/export
+      - zabbix-snmptraps:/var/lib/zabbix/snmptraps
 
     restart: unless-stopped
 
@@ -125,6 +129,10 @@ volumes:
   zabbix-db-data:
   zabbix-server-data:
   grafana-data:
+  zabbix-alertscripts:
+  zabbix-externalscripts:
+  zabbix-export:
+  zabbix-snmptraps:
 
 
 networks:
