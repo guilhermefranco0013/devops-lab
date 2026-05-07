@@ -4,7 +4,7 @@ services:
     image: mysql:8.0.36
 
     env_file:
-      - .env
+      - ..environments/.env
 
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -36,7 +36,7 @@ services:
     image: zabbix/zabbix-server-mysql:ubuntu-6.4.0
 
     env_file:
-      - .env
+      - ..environments/.env
 
     environment:
       DB_SERVER_HOST: zabbix-db
@@ -69,7 +69,7 @@ services:
     image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.0
 
     env_file:
-      - .env
+      - ..environments/.env
 
     environment:
       DB_SERVER_HOST: zabbix-db
