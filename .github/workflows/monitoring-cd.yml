@@ -68,7 +68,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          ..deploy/monitoring/deploy-monitoring.sh
+          /home/guilherme/devops-lab/deploy/monitoring/deploy-monitoring.sh
 
       - name: Wait for MySQL healthy
         run: |
@@ -138,4 +138,4 @@ jobs:
             -p monitoring \
             logs --tail=200
 
-            #Note: Completed refactor directory structure, ultimate test.
+            #Note: Refactored directory structure COMPLETED.
