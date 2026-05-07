@@ -68,7 +68,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          /home/guilherme/devops-lab/deploy/monitoring/deploy-monitoring.sh
+          ../deploy/monitoring/deploy-monitoring.sh
 
       - name: Wait for MySQL healthy
         run: |
@@ -99,7 +99,7 @@ jobs:
           set -euo pipefail
 
           timeout 600 bash -c '
-            until curl -kfsS --connect-timeout 5 -I \
+            until curl -kfsS --connect-timeout 5 \
               http://localhost:8080 \
               > /dev/null; do
               echo "Waiting Zabbix Frontend..."
