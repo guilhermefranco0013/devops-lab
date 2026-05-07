@@ -32,7 +32,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ~/devops-lab/monitoring
+        working-directory: /home/guilherme/devops-lab/monitoring
 
     steps:
       - name: Checkout repository
@@ -138,5 +138,4 @@ jobs:
             -p monitoring \
             logs --tail=200
 
-            #Note: Completed refactor directory struct
-            
+            #Note: Completed refactor directory struct, last test.
