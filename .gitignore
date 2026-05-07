@@ -172,6 +172,8 @@ build/
 # =========================================================
 
 estrutura.txt
+app/nginx/certs/*.crt
+app/nginx/certs/*.key
 
 # =========================================================
 # KEEP EMPTY DIRECTORIES

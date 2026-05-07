@@ -137,3 +137,6 @@ jobs:
           docker compose \
             -p monitoring \
             logs --tail=200
+
+            #Note: Completed refactor directory struct
+            
