@@ -12,9 +12,9 @@ on:
       - main
 
     paths:
-      - "docker-compose.monitoring.yml"
-      - "grafana/**"
-      - "zabbix/**"
+      - "monitoring/docker-compose.yml"
+      - "monitoring/grafana/**"
+      - "monitoring/zabbix/**"
       - ".github/workflows/monitoring-cd.yml"
 
 permissions:
@@ -57,7 +57,7 @@ jobs:
           cd ~/devops-lab
 
           docker compose \
-            -f docker-compose.monitoring.yml \
+             monitoring/docker-compose.yml \
             config > /dev/null
 
       - name: Pull latest monitoring images
@@ -68,7 +68,7 @@ jobs:
           cd ~/devops-lab
 
           docker compose \
-            -f docker-compose.monitoring.yml \
+             monitoring/docker-compose.yml \
             -p monitoring \
             pull
 
@@ -127,7 +127,7 @@ jobs:
           set -euo pipefail
 
           docker compose \
-            -f ~/devops-lab/docker-compose.monitoring.yml \
+             monitoring/docker-compose.yml \
             -p monitoring \
             ps
 
@@ -154,7 +154,6 @@ jobs:
           set -euo pipefail
 
           docker compose \
-            -f ~/devops-lab/docker-compose.monitoring.yml \
+             monitoring/docker-compose.yml \
             -p monitoring \
             logs --tail=200
-            

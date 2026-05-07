@@ -8,7 +8,7 @@ on:
     paths:
       - "site/**"
       - "apps/Dockerfile"
-      - "docker-compose.yml"
+      - "apps/docker-compose.yml"
       - "nginx/**"
       - ".github/workflows/app-cd.yml"
 
