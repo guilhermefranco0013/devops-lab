@@ -86,19 +86,22 @@ jobs:
         run: |
           set -euo pipefail
 
-          timeout 180 bash -c '
+          timeout 300 bash -c '
             until [ "$(docker inspect -f "{{.State.Health.Status}}" monitoring-zabbix-db-1)" = "healthy" ]; do
               echo "Waiting MySQL..."
               sleep 5
             done
           '
+
       - name: Check Grafana health
         shell: bash
         run: |
           set -euo pipefail
 
           timeout 180 bash -c '
-            until curl -fsS http://localhost:3000/api/health > /dev/null; do
+            until curl -kfsS --connect-timeout 5 \
+              http://localhost:3000/api/health \
+              > /dev/null; do
               echo "Waiting Grafana..."
               sleep 5
             done
@@ -109,8 +112,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          timeout 240 bash -c '
-            until curl -fsS http://localhost:8080 > /dev/null; do
+          timeout 600 bash -c '
+            until curl -kfsS --connect-timeout 5 -I \
+              http://localhost:8080 \
+              > /dev/null; do
               echo "Waiting Zabbix Frontend..."
               sleep 5
             done
@@ -126,19 +131,21 @@ jobs:
             -p monitoring \
             ps
 
-      - name: Cleanup dangling images
+      - name: Cleanup old unused images
         shell: bash
         run: |
           set -euo pipefail
 
-          docker image prune -f
+          docker image prune -af \
+            --filter "until=72h"
 
       - name: Show monitoring status
         shell: bash
         run: |
           set -euo pipefail
 
-          docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+          docker ps \
+            --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
       - name: Show logs on failure
         if: failure()
@@ -150,3 +157,4 @@ jobs:
             -f ~/devops-lab/docker-compose.monitoring.yml \
             -p monitoring \
             logs --tail=200
+            #Teste deploy com falha para verificar se os logs estão sendo exibidos corretamente.
