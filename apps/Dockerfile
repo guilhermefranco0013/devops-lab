@@ -4,6 +4,6 @@ FROM nginx:1.25-alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # copia site do repo para nginx
-COPY site/ /usr/share/nginx/html/
+COPY apps/site/ /usr/share/nginx/html/
 
 EXPOSE 80
