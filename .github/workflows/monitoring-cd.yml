@@ -138,4 +138,4 @@ jobs:
             -p monitoring \
             logs --tail=200
 
-            #Note: Completed refactor directory struct, ultimate test lets go .env updated.
+            #Note: Completed refactor directory structure, ultimate test.
