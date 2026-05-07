@@ -2,43 +2,55 @@
 set -euo pipefail
 
 IMAGE_TAG=${1:-web-prod}
-PREVIOUS_FILE=.last_deploy
+
+ROOT_DIR="/home/guilherme/devops-lab"
+APP_DIR="$ROOT_DIR/apps"
+DEPLOY_DIR="$ROOT_DIR/deploy/app"
+
+PREVIOUS_FILE="$ROOT_DIR/.last_deploy"
 
 echo "🚀 Deploy: $IMAGE_TAG"
 
-cd ~/devops-lab
+cd "$APP_DIR"
 
-# salva anterior
-if [ -f $PREVIOUS_FILE ]; then
-  PREVIOUS=$(cat $PREVIOUS_FILE)
+# salva deploy anterior
+if [ -f "$PREVIOUS_FILE" ]; then
+  PREVIOUS=$(cat "$PREVIOUS_FILE")
 else
   PREVIOUS=""
 fi
 
-echo "$IMAGE_TAG" > $PREVIOUS_FILE
+echo "$IMAGE_TAG" > "$PREVIOUS_FILE"
 
-export IMAGE_TAG=$IMAGE_TAG
+export IMAGE_TAG
 
 docker compose -p app pull
-docker compose -p app up -d --remove-orphans
 
-echo "⏳ aguardando..."
+docker compose \
+  -p app \
+  up -d --remove-orphans
+
+echo "⏳ aguardando healthcheck..."
 
 for i in {1..10}; do
   if curl -fsS http://localhost > /dev/null; then
-    echo "✅ OK"
+    echo "✅ Aplicação saudável"
     break
   fi
+
   sleep 2
 done
 
 if ! curl -fsS http://localhost > /dev/null; then
-  echo "❌ falha, rollback..."
+  echo "❌ Falha detectada, iniciando rollback..."
+
   if [ -n "$PREVIOUS" ]; then
-    ./deploy.sh "$PREVIOUS"
+    "$DEPLOY_DIR/deploy.sh" "$PREVIOUS"
   fi
+
   exit 1
 fi
 
 docker image prune -f
+
 echo "✅ Deploy concluído"

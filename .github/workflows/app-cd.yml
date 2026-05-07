@@ -22,7 +22,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ~/devops-lab/app
+        working-directory: /home/guilherme/devops-lab/apps
 
     steps:
       - uses: actions/checkout@v4
