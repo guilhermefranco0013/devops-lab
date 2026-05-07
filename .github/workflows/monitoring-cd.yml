@@ -12,9 +12,7 @@ on:
       - main
 
     paths:
-      - "monitoring/docker-compose.yml"
-      - "monitoring/grafana/**"
-      - "monitoring/zabbix/**"
+      - "monitoring/**"
       - ".github/workflows/monitoring-cd.yml"
 
 permissions:
@@ -31,58 +29,48 @@ jobs:
     environment:
       name: production
 
+    defaults:
+      run:
+        shell: bash
+        working-directory: ~/devops-lab/monitoring
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Validate Docker daemon
-        shell: bash
         run: |
           set -euo pipefail
 
           docker info > /dev/null
 
       - name: Check disk space
-        shell: bash
         run: |
           set -euo pipefail
 
           df -h
 
       - name: Validate Docker Compose syntax
-        shell: bash
         run: |
           set -euo pipefail
 
-          cd ~/devops-lab
-
-          docker compose \
-            -f monitoring/docker-compose.yml \
-            config > /dev/null
+          docker compose config > /dev/null
 
       - name: Pull latest monitoring images
-        shell: bash
         run: |
           set -euo pipefail
 
-          cd ~/devops-lab
-
           docker compose \
-            -f monitoring/docker-compose.yml \
             -p monitoring \
             pull
 
       - name: Deploy monitoring stack
-        shell: bash
         run: |
           set -euo pipefail
 
-          cd ~/devops-lab
-
-          ./deploy-monitoring.sh
+          ..deploy/monitoring/deploy-monitoring.sh
 
       - name: Wait for MySQL healthy
-        shell: bash
         run: |
           set -euo pipefail
 
@@ -94,7 +82,6 @@ jobs:
           '
 
       - name: Check Grafana health
-        shell: bash
         run: |
           set -euo pipefail
 
@@ -108,7 +95,6 @@ jobs:
           '
 
       - name: Check Zabbix frontend
-        shell: bash
         run: |
           set -euo pipefail
 
@@ -122,17 +108,14 @@ jobs:
           '
 
       - name: Validate monitoring containers
-        shell: bash
         run: |
           set -euo pipefail
 
           docker compose \
-            -f monitoring/docker-compose.yml \
             -p monitoring \
             ps
 
       - name: Cleanup old unused images
-        shell: bash
         run: |
           set -euo pipefail
 
@@ -140,7 +123,6 @@ jobs:
             --filter "until=72h"
 
       - name: Show monitoring status
-        shell: bash
         run: |
           set -euo pipefail
 
@@ -149,11 +131,9 @@ jobs:
 
       - name: Show logs on failure
         if: failure()
-        shell: bash
         run: |
           set -euo pipefail
 
           docker compose \
-            -f monitoring/docker-compose.yml \
             -p monitoring \
             logs --tail=200
