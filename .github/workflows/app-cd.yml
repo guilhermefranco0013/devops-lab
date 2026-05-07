@@ -26,7 +26,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./apps/Dockerfile
+          file: apps/Dockerfile
           push: true
           tags: |
             guifranco/devops-lab:web-${{ github.sha }}
