@@ -292,13 +292,13 @@ if ! curl -fsS http://localhost > /dev/null; then
 
 # 🌐 Rede e Acesso
 
-## Acesso remoto realizado via:
+### Acesso remoto realizado via:
 
 - Tailscale VPN
 - SSH privado
 - comunicação segura entre ambientes
 
-## Sistema operacional utilizado:
+### Sistema operacional utilizado:
 
 - Ubuntu 24.04 Minimal
 
@@ -308,7 +308,7 @@ if ! curl -fsS http://localhost > /dev/null; then
 
 ## 🛠️ Docker Networking
 
-## Problemas relacionados:
+### Problemas relacionados:
 
 - UFW
 - ALLOW/DENY GROUP
@@ -317,42 +317,42 @@ if ! curl -fsS http://localhost > /dev/null; then
 
 # 🛠️ Persistência de Volumes
 
-## Problemas:
+### Problemas:
 
 - volumes com hashes aleatórias
 - inconsistência de persistência
 
-## Solução:
+### Solução:
 
 refatoração da estrutura de volumes
 
 # 🛠️ MySQL + Zabbix
 
-## Problema:
+### Problema:
 
 - incompatibilidade com MySQL 8.4.6
 
-## Solução:
+### Solução:
 
 - downgrade para MySQL 8.0.36
 
 # 🛠️ Variáveis de Ambiente
 
- ## Problema:
+ ### Problema:
 
 - .env vazio causando falha no deploy
 
-## Solução:
+### Solução:
 
 - implementação de symlink para leitura correta
 
 # 🛠️ Segurança
 
-## Problema:
+### Problema:
 
 - vazamento inicial de `.env`
 
-## Solução:
+### Solução:
 
 - remoção do repositório
 - refatoração
@@ -360,7 +360,7 @@ refatoração da estrutura de volumes
 
 # 🛠️ Linux Troubleshooting
 
-## Resolução de:
+### Resolução de:
 
 - permissões
 - conflitos de portas
