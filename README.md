@@ -282,7 +282,7 @@ if ! curl -fsS http://localhost > /dev/null; then
 
 # 🔒 Segurança
 
-## Implementado
+### Implementado
 
 - HTTPS/TLS
 - Certificados locais
