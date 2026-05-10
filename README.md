@@ -49,113 +49,113 @@ O projeto foi construído visando aprendizado prático em:
 - entrega contínua
 - troubleshooting de ambientes Linux
 
----
+```mermaid
+flowchart TD
 
-    %% =========================
-    %% DEVELOPMENT FLOW
-    %% =========================
+%% =========================
+%% DEVELOPMENT FLOW
+%% =========================
 
-    DEV[👨‍💻 Developer]
-    TAIL[🔐 Tailscale VPN]
-    VSCODE[🧠 VSCode Remote SSH]
-    VPS[🖥️ Ubuntu VPS<br/>devops-lab]
+DEV[👨‍💻 Developer]
+TAIL[🔐 Tailscale VPN]
+VSCODE[🧠 VSCode Remote SSH]
+VPS[🖥️ Ubuntu VPS<br/>devops-lab]
 
-    DEV --> TAIL
-    TAIL --> VSCODE
-    VSCODE --> VPS
+DEV --> TAIL
+TAIL --> VSCODE
+VSCODE --> VPS
 
-    %% =========================
-    %% GIT FLOW
-    %% =========================
+%% =========================
+%% GIT FLOW
+%% =========================
 
-    GIT[📦 Git Commit + Push]
-    GH[🐙 GitHub Repository]
+GIT[📦 Git Commit + Push]
+GH[🐙 GitHub Repository]
 
-    VPS --> GIT
-    GIT --> GH
+VPS --> GIT
+GIT --> GH
 
-    %% =========================
-    %% GITHUB ACTIONS
-    %% =========================
+%% =========================
+%% GITHUB ACTIONS
+%% =========================
 
-    GHA[⚙️ GitHub Actions]
+GHA[⚙️ GitHub Actions]
 
-    CI[🧪 ci.yml<br/>Build • Validation • Checks]
+CI[🧪 ci.yml<br/>Build • Validation • Checks]
 
-    APPCD[🚀 app-cd.yml]
-    MONCD[📊 monitoring-cd.yml]
+APPCD[🚀 app-cd.yml]
+MONCD[📊 monitoring-cd.yml]
 
-    RUNNER[🏃 Self-Hosted Runner<br/>Running on VPS]
+RUNNER[🏃 Self-Hosted Runner<br/>Running on VPS]
 
-    GH --> GHA
+GH --> GHA
 
-    GHA --> CI
-    CI --> RUNNER
+GHA --> CI
+CI --> RUNNER
 
-    RUNNER --> APPCD
-    RUNNER --> MONCD
+RUNNER --> APPCD
+RUNNER --> MONCD
 
-    %% =========================
-    %% DEPLOY SCRIPTS
-    %% =========================
+%% =========================
+%% DEPLOY SCRIPTS
+%% =========================
 
-    APPDEPLOY[📜 deploy/app/deploy.sh]
-    MONDEPLOY[📜 deploy/monitoring/deploy-monitoring.sh]
+APPDEPLOY[📜 deploy/app/deploy.sh]
+MONDEPLOY[📜 deploy/monitoring/deploy-monitoring.sh]
 
-    APPCD --> APPDEPLOY
-    MONCD --> MONDEPLOY
+APPCD --> APPDEPLOY
+MONCD --> MONDEPLOY
 
-    %% =========================
-    %% DOCKER COMPOSE STACKS
-    %% =========================
+%% =========================
+%% DOCKER COMPOSE STACKS
+%% =========================
 
-    APPCOMPOSE[🐳 app/docker-compose.yml]
-    MONCOMPOSE[🐳 monitoring/docker-compose.yml]
+APPCOMPOSE[🐳 app/docker-compose.yml]
+MONCOMPOSE[🐳 monitoring/docker-compose.yml]
 
-    APPDEPLOY --> APPCOMPOSE
-    MONDEPLOY --> MONCOMPOSE
+APPDEPLOY --> APPCOMPOSE
+MONDEPLOY --> MONCOMPOSE
 
-    %% =========================
-    %% APPLICATION STACK
-    %% =========================
+%% =========================
+%% APPLICATION STACK
+%% =========================
 
-    NGINX[🌐 NGINX]
-    APP[📦 Application]
-    MYSQL[🗄️ MySQL]
+NGINX[🌐 NGINX]
+APP[📦 Application]
+MYSQL[🗄️ MySQL]
 
-    APPCOMPOSE --> NGINX
-    APPCOMPOSE --> APP
-    APPCOMPOSE --> MYSQL
+APPCOMPOSE --> NGINX
+APPCOMPOSE --> APP
+APPCOMPOSE --> MYSQL
 
-    NGINX --> APP
-    APP --> MYSQL
+NGINX --> APP
+APP --> MYSQL
 
-    %% =========================
-    %% MONITORING STACK
-    %% =========================
+%% =========================
+%% MONITORING STACK
+%% =========================
 
-    GRAFANA[📈 Grafana]
-    ZABBIX[📡 Zabbix]
-    PROM[🔥 Prometheus]
+GRAFANA[📈 Grafana]
+ZABBIX[📡 Zabbix]
+PROM[🔥 Prometheus]
 
-    MONCOMPOSE --> GRAFANA
-    MONCOMPOSE --> ZABBIX
-    MONCOMPOSE --> PROM
+MONCOMPOSE --> GRAFANA
+MONCOMPOSE --> ZABBIX
+MONCOMPOSE --> PROM
 
-    GRAFANA --> PROM
-    GRAFANA --> ZABBIX
-    ZABBIX --> MYSQL
+GRAFANA --> PROM
+GRAFANA --> ZABBIX
+ZABBIX --> MYSQL
 
-    %% =========================
-    %% USERS
-    %% =========================
+%% =========================
+%% USERS
+%% =========================
 
-    USERS[🌍 Browser / Users]
+USERS[🌍 Browser / Users]
 
-    USERS --> NGINX
-    USERS --> GRAFANA  USERS --> GRAFANA
-
----
+USERS --> NGINX
+USERS --> GRAFANA
+```
 
 # 🧰 Stack Utilizada
 
