@@ -262,7 +262,7 @@ if ! curl -fsS http://localhost > /dev/null; then
 - Linux
 - infra-dev
 
-Objetivos:
+### Objetivos:
 
 - maior controle operacional
 - ambiente customizado
@@ -270,11 +270,11 @@ Objetivos:
 
 ## 🐳 Docker Hub
 
-Imagem publicada:
+### Imagem publicada:
 
 - guifranco/devops-lab
 
-Versionamento realizado utilizando:
+### Versionamento realizado utilizando:
 
 - SHA do GitHub
 - latest
