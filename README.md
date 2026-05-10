@@ -51,37 +51,111 @@ O projeto foi construído visando aprendizado prático em:
 
 ---
 
-# 🏗️ Arquitetura
+    %% =========================
+    %% DEVELOPMENT FLOW
+    %% =========================
 
-```mermaid
-flowchart TD
+    DEV[👨‍💻 Developer]
+    TAIL[🔐 Tailscale VPN]
+    VSCODE[🧠 VSCode Remote SSH]
+    VPS[🖥️ Ubuntu VPS<br/>devops-lab]
 
-    DEV[Developer]
-    GH[GitHub Repository]
-    GHA[GitHub Actions]
-    RUNNER[Self Hosted Runner]
-    VPS[Ubuntu 24.04 VPS]
-    NGINX[NGINX Container]
-    MYSQL[MySQL Container]
-    GRAFANA[Grafana]
-    ZABBIX[Zabbix Server]
-    USERS[Users]
+    DEV --> TAIL
+    TAIL --> VSCODE
+    VSCODE --> VPS
 
-    DEV --> GH
+    %% =========================
+    %% GIT FLOW
+    %% =========================
+
+    GIT[📦 Git Commit + Push]
+    GH[🐙 GitHub Repository]
+
+    VPS --> GIT
+    GIT --> GH
+
+    %% =========================
+    %% GITHUB ACTIONS
+    %% =========================
+
+    GHA[⚙️ GitHub Actions]
+
+    CI[🧪 ci.yml<br/>Build • Validation • Checks]
+
+    APPCD[🚀 app-cd.yml]
+    MONCD[📊 monitoring-cd.yml]
+
+    RUNNER[🏃 Self-Hosted Runner<br/>Running on VPS]
+
     GH --> GHA
-    GHA --> RUNNER
-    RUNNER --> VPS
 
-    VPS --> NGINX
-    VPS --> MYSQL
-    VPS --> GRAFANA
-    VPS --> ZABBIX
+    GHA --> CI
+    CI --> RUNNER
+
+    RUNNER --> APPCD
+    RUNNER --> MONCD
+
+    %% =========================
+    %% DEPLOY SCRIPTS
+    %% =========================
+
+    APPDEPLOY[📜 deploy/app/deploy.sh]
+    MONDEPLOY[📜 deploy/monitoring/deploy-monitoring.sh]
+
+    APPCD --> APPDEPLOY
+    MONCD --> MONDEPLOY
+
+    %% =========================
+    %% DOCKER COMPOSE STACKS
+    %% =========================
+
+    APPCOMPOSE[🐳 app/docker-compose.yml]
+    MONCOMPOSE[🐳 monitoring/docker-compose.yml]
+
+    APPDEPLOY --> APPCOMPOSE
+    MONDEPLOY --> MONCOMPOSE
+
+    %% =========================
+    %% APPLICATION STACK
+    %% =========================
+
+    NGINX[🌐 NGINX]
+    APP[📦 Application]
+    MYSQL[🗄️ MySQL]
+
+    APPCOMPOSE --> NGINX
+    APPCOMPOSE --> APP
+    APPCOMPOSE --> MYSQL
+
+    NGINX --> APP
+    APP --> MYSQL
+
+    %% =========================
+    %% MONITORING STACK
+    %% =========================
+
+    GRAFANA[📈 Grafana]
+    ZABBIX[📡 Zabbix]
+    PROM[🔥 Prometheus]
+
+    MONCOMPOSE --> GRAFANA
+    MONCOMPOSE --> ZABBIX
+    MONCOMPOSE --> PROM
+
+    GRAFANA --> PROM
+    GRAFANA --> ZABBIX
+    ZABBIX --> MYSQL
+
+    %% =========================
+    %% USERS
+    %% =========================
+
+    USERS[🌍 Browser / Users]
 
     USERS --> NGINX
+    USERS --> GRAFANA  USERS --> GRAFANA
 
-    ZABBIX --> MYSQL
-    GRAFANA --> ZABBIX
-```
+---
 
 # 🧰 Stack Utilizada
 
