@@ -10,6 +10,10 @@
 ![Linux](https://img.shields.io/badge/Linux-Ubuntu_24.04-E95420?logo=ubuntu)
 ![Tailscale](https://img.shields.io/badge/Tailscale-Remote_Access-242424?logo=tailscale)
 
+<p align="center">
+  <img src="assets/devops-lab-flow.gif" alt="DevOps Lab Flow" width="1200"/>
+</p>
+
 Projeto de infraestrutura containerizada focado em práticas DevOps modernas, utilizando deploy automatizado, observabilidade, monitoramento, rollback automático e pipelines CI/CD desacopladas.
 
 O ambiente foi desenvolvido para estudo prático e evolução contínua em:
