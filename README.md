@@ -1,4 +1,4 @@
-# 🚀 devops-lab
+# PROJETO: devops-lab
 
 ![Docker](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker)
 ![Docker Compose](https://img.shields.io/badge/Docker--Compose-Orchestration-blue)
