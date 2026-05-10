@@ -1,0 +1,663 @@
+<!-- ============================================== -->
+<!-- DEVOPS-LAB SVG v3 ENTERPRISE ARCHITECTURE -->
+<!-- ============================================== -->
+
+<svg width="1920"
+     height="1180"
+     viewBox="0 0 1920 1180"
+     fill="none"
+     xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+
+    <!-- BACKGROUND -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1920" y2="1180">
+      <stop offset="0%" stop-color="#050816"/>
+      <stop offset="100%" stop-color="#0b1220"/>
+    </linearGradient>
+
+    <!-- COLORS -->
+    <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#fb923c"/>
+    </linearGradient>
+
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#4ade80"/>
+    </linearGradient>
+
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0891b2"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+
+    <linearGradient id="ciGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#312e81"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+
+    <linearGradient id="cdGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#801471"/>
+      <stop offset="100%" stop-color="#530a4db7"/>
+    </linearGradient>
+
+    <!-- GLOW -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+  </defs>
+
+  <style>
+
+    .title {
+      font: bold 64px 'Segoe UI';
+      fill: white;
+    }
+
+    .subtitle {
+      font: 22px 'Segoe UI';
+      fill: #94a3b8;
+    }
+
+    .card-title {
+      font: bold 20px 'Segoe UI';
+      fill: white;
+    }
+
+    .card-text {
+      font: 16px 'Segoe UI';
+      fill: #dbeafe;
+    }
+
+    .small {
+      font: 14px 'Segoe UI';
+      fill: #ffffff;
+    }
+
+    .section-title {
+      font: bold 28px 'Segoe UI';
+      fill: white;
+    }
+
+    .flow {
+      stroke-dasharray: 14;
+      animation: dash 2s linear infinite;
+    }
+
+    @keyframes dash {
+      from { stroke-dashoffset: 28; }
+      to { stroke-dashoffset: 0; }
+    }
+
+  </style>
+
+  <!-- BACKGROUND -->
+  <rect width="1920" height="1180" fill="url(#bg)"/>
+
+  <!-- TITLE -->
+  <text x="960" y="80" text-anchor="middle" class="title">
+    DEVOPS-LAB
+  </text>
+
+  <text x="960" y="120" text-anchor="middle" class="subtitle">
+    Remote Development • Self-Hosted CI/CD • Docker Compose Infrastructure • Monitoring and Observability
+  </text>
+
+  <!-- ================================= -->
+  <!-- DEVELOPMENT FLOW -->
+  <!-- ================================= -->
+
+  <!-- DEVELOPER -->
+  <rect x="40" y="180" width="180" height="140" rx="24"
+        fill="rgba(124,58,237,0.15)"
+        stroke="#a855f7"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+<!-- ICON -->
+<circle cx="130" cy="225" r="22"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#a855f7"
+        stroke-width="2"/>
+
+<path d="M122 228
+         C122 220,138 220,138 228
+         M130 220
+         A6 6 0 1 1 129.9 220"
+      stroke="white"
+      stroke-width="2.2"
+      fill="none"
+      stroke-linecap="round"/>
+
+<text x="130" y="275"
+      text-anchor="middle"
+      class="card-title">
+  Developer
+</text>
+
+  <text x="130" y="300" text-anchor="middle" class="small">
+    VSCode Workflow
+  </text>
+
+  <!-- TAILSCALE -->
+  <rect x="290" y="180" width="220" height="140" rx="24"
+        fill="rgba(37,99,235,0.15)"
+        stroke="#38bdf8"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+<!-- ICON -->
+<circle cx="400" cy="225" r="22"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#38bdf8"
+        stroke-width="2"/>
+
+<path d="M400 214
+         L412 220
+         L412 230
+         C412 238,406 242,400 246
+         C394 242,388 238,388 230
+         L388 220 Z"
+      stroke="white"
+      stroke-width="2"
+      fill="none"/>
+
+<text x="400" y="275"
+      text-anchor="middle"
+      class="card-title">
+  Tailscale VPN
+</text>
+
+  <text x="400" y="300" text-anchor="middle" class="small">
+    Secure Remote Access
+  </text>
+
+  <!-- VPS -->
+  <rect x="580" y="180" width="240" height="140" rx="24"
+        fill="rgba(234,88,12,0.15)"
+        stroke="#fb923c"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+<!-- ICON -->
+<circle cx="700" cy="225" r="22"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#fb923c"
+        stroke-width="2"/>
+
+<rect x="688" y="215"
+      width="24"
+      height="8"
+      rx="2"
+      stroke="white"
+      stroke-width="2"
+      fill="none"/>
+
+<rect x="688" y="227"
+      width="24"
+      height="8"
+      rx="2"
+      stroke="white"
+      stroke-width="2"
+      fill="none"/>
+
+<text x="700" y="275"
+      text-anchor="middle"
+      class="card-title">
+  Ubuntu VPS
+</text>
+
+  <text x="700" y="300" text-anchor="middle" class="small">
+    devops-lab
+  </text>
+
+  <!-- GIT -->
+  <rect x="890" y="180" width="220" height="140" rx="24"
+        fill="rgb(131, 121, 35)"
+        stroke="#dddd3d"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+  <!-- ICON -->
+<circle cx="1000" cy="225" r="22"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#dddd3d"
+        stroke-width="2"/>
+
+<circle cx="992" cy="225" r="3"
+        fill="white"/>
+
+<circle cx="1008" cy="225" r="3"
+        fill="white"/>
+
+<line x1="995" y1="225"
+      x2="1005" y2="225"
+      stroke="white"
+      stroke-width="2"/>
+
+<text x="1000" y="275"
+      text-anchor="middle"
+      class="card-title">
+  Git Commit
+</text>
+
+  <text x="1000" y="300" text-anchor="middle" class="small">
+    Commit + Push
+  </text>
+
+  <!-- GITHUB -->
+  <rect x="1180" y="180" width="240" height="140" rx="24"
+        fill="rgba(220,38,38,0.15)"
+        stroke="#ef4444"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+<!-- ICON -->
+<circle cx="1300" cy="225" r="22"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#ef4444"
+        stroke-width="2"/>
+
+<path d="M1292 232
+         C1292 224,1308 224,1308 232
+         M1296 236
+         L1296 228
+         M1304 236
+         L1304 228"
+      stroke="white"
+      stroke-width="2"
+      fill="none"
+      stroke-linecap="round"/>
+
+<text x="1300" y="275"
+      text-anchor="middle"
+      class="card-title">
+  GitHub Repository
+</text>
+
+  <text x="1300" y="300" text-anchor="middle" class="small">
+    Source Control
+  </text>
+
+  <!-- ACTIONS -->
+  <rect x="1490" y="180" width="300" height="140" rx="24"
+        fill="rgba(8,145,178,0.15)"
+        stroke="#22d3ee"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+<!-- ICON -->
+<circle cx="1640" cy="225" r="22"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#22d3ee"
+        stroke-width="2"/>
+
+<path d="M1630 230
+         L1640 220
+         L1650 230"
+      stroke="white"
+      stroke-width="2.2"
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+
+<line x1="1640" y1="220"
+      x2="1640" y2="238"
+      stroke="white"
+      stroke-width="2"/>
+
+<text x="1640" y="275"
+      text-anchor="middle"
+      class="card-title">
+  GitHub Actions
+</text>
+
+  <text x="1640" y="300" text-anchor="middle" class="small">
+    ci.yml • app-cd.yml • monitoring-cd.yml
+  </text>
+
+  <!-- FLOW -->
+  <line x1="220" y1="250" x2="290" y2="250" stroke="#a855f7" stroke-width="5" class="flow"/>
+  <line x1="510" y1="250" x2="580" y2="250" stroke="#38bdf8" stroke-width="5" class="flow"/>
+  <line x1="820" y1="250" x2="890" y2="250" stroke="#fb923c" stroke-width="5" class="flow"/>
+  <line x1="1110" y1="250" x2="1180" y2="250" stroke="#4ade80" stroke-width="5" class="flow"/>
+  <line x1="1420" y1="250" x2="1490" y2="250" stroke="#22d3ee" stroke-width="5" class="flow"/>
+
+  <!-- ================================= -->
+  <!-- VPS INFRA -->
+  <!-- ================================= -->
+
+  <rect x="40" y="400"
+        width="1840"
+        height="700"
+        rx="30"
+        fill="#08101f"
+        stroke="#1e293b"
+        stroke-width="2"/>
+
+  <text x="960" y="460"
+        text-anchor="middle"
+        class="section-title">
+    EVERYTHING RUNNING INSIDE THE SAME VPS
+  </text>
+
+  <!-- RUNNER -->
+  <rect x="90" y="540"
+        width="260"
+        height="220"
+        rx="24"
+        fill="rgba(37,99,235,0.15)"
+        stroke="#38bdf8"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+<!-- ICON -->
+<circle cx="220" cy="585" r="24"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#38bdf8"
+        stroke-width="2"/>
+
+<rect x="208" y="576"
+      width="24"
+      height="18"
+      rx="2"
+      stroke="white"
+      stroke-width="2"
+      fill="none"/>
+
+<line x1="214" y1="598"
+      x2="226" y2="598"
+      stroke="white"
+      stroke-width="2"/>
+
+<text x="220" y="650"
+      text-anchor="middle"
+      class="card-title">
+  Self-Hosted Runner
+</text>
+
+  <text x="220" y="700"
+        text-anchor="middle"
+        class="small">
+    Executes GitHub workflows locally
+  </text>
+
+  <!-- CI -->
+  <rect x="420" y="540"
+        width="260"
+        height="220"
+        rx="24"
+        fill="url(#ciGradient)"
+        stroke="#818cf8"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+<!-- ICON -->
+<circle cx="550" cy="585" r="24"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#818cf8"
+        stroke-width="2"/>
+
+<path d="M538 586
+         L547 595
+         L563 577"
+      stroke="white"
+      stroke-width="3"
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+
+<text x="550" y="650"
+      text-anchor="middle"
+      class="card-title">
+  CI Pipeline
+</text>
+
+  <text x="550" y="700"
+        text-anchor="middle"
+        class="small">
+    Build • Validation • Checks
+  </text>
+
+  <!-- CD -->
+  <rect x="750" y="540"
+        width="300"
+        height="220"
+        rx="24"
+        fill="url(#cdGradient)"
+        stroke="#da27d198"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+<!-- ICON -->
+<circle cx="900" cy="585" r="24"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#da27d1"
+        stroke-width="2"/>
+
+<path d="M890 592
+         L900 578
+         L910 592"
+      stroke="white"
+      stroke-width="2.4"
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+
+<line x1="900" y1="578"
+      x2="900" y2="602"
+      stroke="white"
+      stroke-width="2"/>
+
+<text x="900" y="650"
+      text-anchor="middle"
+      class="card-title">
+  CD Deploy
+</text>
+
+  <text x="900" y="700"
+        text-anchor="middle"
+        class="small">
+    Conditional Deploy
+  </text>
+
+  <text x="900" y="720"
+        text-anchor="middle"
+        class="small">
+    APP or Monitoring
+  </text>
+
+  <!-- APP COMPOSE -->
+  <rect x="1140" y="500"
+        width="320"
+        height="280"
+        rx="28"
+        fill="rgba(22,163,74,0.15)"
+        stroke="#4ade80"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+<!-- ICON -->
+<circle cx="1300" cy="565" r="24"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#4ade80"
+        stroke-width="2"/>
+
+<rect x="1288" y="553"
+      width="24"
+      height="24"
+      rx="4"
+      stroke="white"
+      stroke-width="2"
+      fill="none"/>
+
+<text x="1300" y="620"
+      text-anchor="middle"
+      class="card-title">
+  APP STACK
+</text>
+
+  <text x="1300" y="700"
+        text-anchor="middle"
+        class="card-text">
+    app/docker-compose.yml
+  </text>
+
+  <text x="1300" y="680"
+        text-anchor="middle"
+        class="small">
+    NGINX • APP • MySQL
+  </text>
+
+  <!-- MONITORING -->
+  <rect x="1510" y="500"
+        width="320"
+        height="280"
+        rx="28"
+        fill="rgba(234,88,12,0.15)"
+        stroke="#fb923c"
+        stroke-width="3"
+        filter="url(#glow)"/>
+
+<!-- ICON -->
+<circle cx="1670" cy="565" r="24"
+        fill="rgba(255,255,255,0.05)"
+        stroke="#fb923c"
+        stroke-width="2"/>
+
+<polyline points="1656,574 1666,564 1674,572 1684,558"
+          stroke="white"
+          stroke-width="2.4"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+
+<text x="1670" y="620"
+      text-anchor="middle"
+      class="card-title">
+  Monitoring Stack
+</text>
+
+  <text x="1670" y="700"
+        text-anchor="middle"
+        class="card-text">
+    monitoring/docker-compose.yml
+  </text>
+
+  <text x="1670" y="750"
+        text-anchor="middle"
+        class="small">
+    Grafana • Zabbix • Prometheus
+  </text>
+
+  <!-- FLOWS -->
+  <line x1="350" y1="650" x2="420" y2="650"
+        stroke="#38bdf8"
+        stroke-width="5"
+        class="flow"/>
+
+  <line x1="680" y1="650" x2="750" y2="650"
+        stroke="#818cf8"
+        stroke-width="5"
+        class="flow"/>
+
+  <line x1="1050" y1="610" x2="1140" y2="610"
+        stroke="#4ade80"
+        stroke-width="5"
+        class="flow"/>
+
+  <line x1="1050" y1="710" x2="1510" y2="710"
+        stroke="#fb923c"
+        stroke-width="5"
+        class="flow"/>
+
+  <!-- ================================= -->
+  <!-- FINAL STATUS SECTION -->
+  <!-- ================================= -->
+
+  <!-- STATUS PANEL -->
+  <rect x="520"
+        y="860"
+        width="880"
+        height="140"
+        rx="30"
+        fill="rgba(34,197,94,0.08)"
+        stroke="rgba(34,197,94,0.35)"
+        stroke-width="2"
+        filter="url(#glow)"/>
+
+  <!-- PULSE ANIMATION -->
+ <!-- GLOW BACKGROUND -->
+<circle cx="650"
+        cy="930"
+        r="48"
+        fill="#22c55e"
+        opacity="0.25"
+        filter="url(#glow)">
+
+  <animate attributeName="opacity"
+           values="0.15;0.85;0.15"
+           dur="2.2s"
+           repeatCount="indefinite"/>
+
+</circle>
+
+<!-- MAIN GREEN CIRCLE -->
+<circle cx="650"
+        cy="930"
+        r="38"
+        fill="#22c55e"/>
+
+<!-- CHECK ICON -->
+<path d="M633 930 L646 943 L670 918"
+      stroke="white"
+      stroke-width="6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      fill="none"/>
+
+  <!-- MAIN STATUS -->
+  <text x="760"
+        y="918"
+        class="card-title"
+        fill="white">
+    Infrastructure Operational
+  </text>
+
+  <text x="760"
+        y="955"
+        class="card-text">
+    CI/CD Pipelines • Docker Compose • Monitoring Stack • Application Stack
+  </text>
+
+  <!-- FOOTER -->
+  <text x="960"
+        y="1070"
+        text-anchor="middle"
+        class="small"
+        fill="#94a3b8">
+    Dockerized Infrastructure • Linux • Self-Hosted Automation • Centralized Monitoring • High Availability Workflow
+  </text>
+
+</svg>

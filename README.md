@@ -229,8 +229,8 @@ devops-lab/
 │       ├── app-cd.yml
 │       └── monitoring-cd.yml
 │
-├── docs/
-│   ├── estrutura.txt
+├── assets/
+│   ├── flow-css.html
 │   └── architecture.md
 │
 ├── .gitignore
