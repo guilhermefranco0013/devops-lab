@@ -2,6 +2,7 @@ services:
 
   zabbix-db:
     image: mysql:8.0.36
+    container_name: zabbix-db
 
     env_file:
       - ../environments/.env
@@ -34,6 +35,7 @@ services:
 
   zabbix-server:
     image: zabbix/zabbix-server-mysql:ubuntu-6.4.0
+    container_name: zabbix-server
 
     env_file:
       - ../environments/.env
@@ -67,6 +69,7 @@ services:
 
   zabbix-web:
     image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.0
+    container_name: zabbix-web
 
     env_file:
       - ../environments/.env
@@ -105,6 +108,7 @@ services:
 
   grafana:
     image: grafana/grafana:10.4.2
+    container_name: grafana
 
     ports:
       - "3000:3000"
@@ -124,6 +128,36 @@ services:
     networks:
       - monitoring
 
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --web.enable-lifecycle
+
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules:/etc/prometheus/rules:ro
+      - ./prometheus/alerts:/etc/prometheus/alerts:ro
+      - ./prometheus/targets:/etc/prometheus/targets:ro
+      - prometheus-data:/prometheus
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/healthy || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+    networks:
+      - monitoring
 
 volumes:
   zabbix-db-data:
@@ -133,6 +167,7 @@ volumes:
   zabbix-externalscripts:
   zabbix-export:
   zabbix-snmptraps:
+  prometheus-data:
 
 
 networks:

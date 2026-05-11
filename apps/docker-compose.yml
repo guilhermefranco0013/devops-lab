@@ -1,8 +1,10 @@
 name: app
 
 services:
+
   nginx:
     image: nginx:1.25-alpine
+    container_name: nginx
 
     ports:
       - "80:80"
@@ -18,8 +20,12 @@ services:
 
     restart: unless-stopped
 
+
   web:
     image: guifranco/devops-lab:${IMAGE_TAG}
+    container_name: web
+
+    pull_policy: always
 
     expose:
       - "80"
