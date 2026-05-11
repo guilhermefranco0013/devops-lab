@@ -138,4 +138,3 @@ jobs:
             -p monitoring \
             logs --tail=200
 
-            #Note: Refactored directory structure COMPLETED, ultimate test.
