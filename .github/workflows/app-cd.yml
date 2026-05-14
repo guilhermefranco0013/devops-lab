@@ -23,16 +23,17 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.0.0
 
       - name: Docker Hub Login
-        uses: docker/login-action@v3
+        uses: docker/login-action@v3.0.0
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
 
       - name: Build & Push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v5.0.0
+
         with:
           context: ./apps
           file: ./apps/Dockerfile
@@ -44,5 +45,3 @@ jobs:
       - name: Deploy
         run: |
           /home/guilherme/devops-lab/deploy/app/deploy.sh web-${{ github.sha }}
-
-          #Test deployment
