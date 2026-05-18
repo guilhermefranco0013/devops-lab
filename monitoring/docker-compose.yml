@@ -426,3 +426,6 @@ secrets:
 networks:
   monitoring:
     driver: bridge
+
+    # Deploy constraints
+    # To ensure that the monitoring stack runs on specific nodes, you can use node labels and
