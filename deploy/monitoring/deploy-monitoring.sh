@@ -8,11 +8,13 @@ echo "🚀 Deploy Monitoring"
 
 cd "$MONITORING_DIR"
 
-docker compose -p monitoring pull
+# Build local images (if Dockerfiles present) and pull remaining images
+docker compose -p monitoring build --pull || true
+docker compose -p monitoring pull || true
 
 docker compose \
   -p monitoring \
-  up -d --remove-orphans
+  up -d --remove-orphans --build
 
 echo "📊 Status:"
 

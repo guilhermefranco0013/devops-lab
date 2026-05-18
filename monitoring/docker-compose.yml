@@ -1,175 +1,428 @@
 services:
-
   zabbix-db:
     image: mysql:8.0.36
     container_name: zabbix-db
-
-    env_file:
-      - ../environments/.env
-
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+    secrets:
+      - mysql_password
+      - mysql_root_password
     command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_bin
-
+    - --character-set-server=utf8mb4
+    - --collation-server=utf8mb4_bin
     volumes:
-      - zabbix-db-data:/var/lib/mysql
-
+    - zabbix-db-data:/var/lib/mysql
     restart: unless-stopped
-
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
+      test:
+      - CMD-SHELL
+      - mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD
       interval: 10s
       timeout: 5s
       retries: 12
       start_period: 40s
-
     networks:
-      - monitoring
-
-
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+        reservations:
+          cpus: '0.5'
+          memory: 512M
   zabbix-server:
     image: zabbix/zabbix-server-mysql:ubuntu-6.4.0
     container_name: zabbix-server
-
-    env_file:
-      - ../environments/.env
-
     environment:
       DB_SERVER_HOST: zabbix-db
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+    secrets:
+      - mysql_password
+      - mysql_root_password
     depends_on:
       zabbix-db:
         condition: service_healthy
-
     ports:
-      - "10051:10051"
-
+    - 10051:10051
     volumes:
-      - zabbix-server-data:/var/lib/zabbix
-      - zabbix-alertscripts:/usr/lib/zabbix/alertscripts
-      - zabbix-externalscripts:/usr/lib/zabbix/externalscripts
-      - zabbix-export:/var/lib/zabbix/export
-      - zabbix-snmptraps:/var/lib/zabbix/snmptraps
-
+    - zabbix-server-data:/var/lib/zabbix
+    - zabbix-alertscripts:/usr/lib/zabbix/alertscripts
+    - zabbix-externalscripts:/usr/lib/zabbix/externalscripts
+    - zabbix-export:/var/lib/zabbix/export
+    - zabbix-snmptraps:/var/lib/zabbix/snmptraps
     restart: unless-stopped
-
-    networks:
-      - monitoring
-
-
-  zabbix-web:
-    image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.0
-    container_name: zabbix-web
-
-    env_file:
-      - ../environments/.env
-
-    environment:
-      DB_SERVER_HOST: zabbix-db
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      ZBX_SERVER_HOST: zabbix-server
-      PHP_TZ: America/Sao_Paulo
-
-    depends_on:
-      zabbix-db:
-        condition: service_healthy
-
-      zabbix-server:
-        condition: service_started
-
-    ports:
-      - "8080:8080"
-
-    restart: unless-stopped
-
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:8080 || exit 1"]
+      test:
+      - CMD-SHELL
+      - bash -c 'cat < /dev/tcp/localhost/10051 > /dev/null 2>&1' || exit 1
       interval: 30s
       timeout: 10s
       retries: 10
       start_period: 60s
-
     networks:
-      - monitoring
-
-
-  grafana:
-    image: grafana/grafana:10.4.2
-    container_name: grafana
-
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.4.0
+    container_name: zabbix-web
+    environment:
+      DB_SERVER_HOST: zabbix-db
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      ZBX_SERVER_HOST: zabbix-server
+      PHP_TZ: America/Sao_Paulo
+    secrets:
+      - mysql_password
+      - mysql_root_password
+    depends_on:
+      zabbix-db:
+        condition: service_healthy
+      zabbix-server:
+        condition: service_healthy
     ports:
-      - "3000:3000"
-
-    volumes:
-      - grafana-data:/var/lib/grafana
-
+    - 8080:8080
     restart: unless-stopped
-
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
+      test:
+      - CMD-SHELL
+      - curl -fsS http://localhost:8080 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    networks:
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+  grafana:
+    build:
+      context: ./dockerfiles/grafana
+    image: monitoring/grafana:local
+    container_name: grafana
+    ports:
+    - 3000:3000
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+    - grafana-data:/var/lib/grafana
+    - ./grafana/provisioning:/etc/grafana/provisioning
+    - ./grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      prometheus:
+        condition: service_healthy
+      loki:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:3000/api/health || exit 1
       interval: 30s
       timeout: 10s
       retries: 10
       start_period: 30s
-
     networks:
-      - monitoring
-
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
   prometheus:
-    image: prom/prometheus:v2.52.0
+    build:
+      context: ./dockerfiles/prometheus
+    image: monitoring/prometheus:local
+    user: root
     container_name: prometheus
     ports:
-      - "9090:9090"
-
+    - 9090:9090
     command:
-      - --config.file=/etc/prometheus/prometheus.yml
-      - --storage.tsdb.path=/prometheus
-      - --storage.tsdb.retention.time=15d
-      - --web.enable-lifecycle
-
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --storage.tsdb.retention.time=15d
+    - --web.enable-lifecycle
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./prometheus/rules:/etc/prometheus/rules:ro
-      - ./prometheus/alerts:/etc/prometheus/alerts:ro
-      - ./prometheus/targets:/etc/prometheus/targets:ro
-      - prometheus-data:/prometheus
-
+    - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    - ./prometheus/rules:/etc/prometheus/rules:ro
+    - ./prometheus/alerts:/etc/prometheus/alerts:ro
+    - ./prometheus/targets:/etc/prometheus/targets:ro
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - prometheus-data:/prometheus
     restart: unless-stopped
-
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/healthy || exit 1"]
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:9090/-/healthy || exit 1
       interval: 30s
       timeout: 10s
       retries: 10
       start_period: 30s
-
     networks:
-      - monitoring
-
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1024M
+        reservations:
+          cpus: '1.0'
+          memory: 512M
+  alertmanager:
+    build:
+      context: ./dockerfiles/alertmanager
+    image: monitoring/alertmanager:local
+    container_name: alertmanager
+    ports:
+    - 9093:9093
+    command:
+    - --config.file=/etc/alertmanager/alertmanager.yml
+    volumes:
+    - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    - alertmanager-data:/alertmanager
+    restart: unless-stopped
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:9093/-/healthy || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+  loki:
+    build:
+      context: ./dockerfiles/loki
+    image: monitoring/loki:local
+    container_name: loki
+    ports:
+    - 3100:3100
+    command:
+    - -config.file=/etc/loki/local-config.yaml
+    volumes:
+    - ./loki/loki-config.yml:/etc/loki/local-config.yaml:ro
+    - loki-data:/loki
+    restart: unless-stopped
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:3100/ready || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+  promtail:
+    build:
+      context: ./dockerfiles/promtail
+    image: monitoring/promtail:local
+    container_name: promtail
+    ports:
+    - 9080:9080
+    command:
+    - -config.file=/etc/promtail/config.yml
+    volumes:
+    - ./loki/promtail-config.yml:/etc/promtail/config.yml:ro
+    - /var/log:/var/log:ro
+    - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    depends_on:
+      loki:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:9080/metrics || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    container_name: node-exporter
+    ports:
+    - 9100:9100
+    command:
+    - --path.procfs=/host/proc
+    - --path.rootfs=/rootfs
+    - --path.sysfs=/host/sys
+    volumes:
+    - /proc:/host/proc:ro
+    - /sys:/host/sys:ro
+    - /:/rootfs:ro
+    restart: unless-stopped
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:9100/metrics || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.25'
+          memory: 64M
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: cadvisor
+    ports:
+    - 8081:8080
+    privileged: true
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:ro
+    - /sys:/sys:ro
+    - /var/lib/docker:/var/lib/docker:ro
+    restart: unless-stopped
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:8080/healthz || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+  mysql-exporter:
+    image: prom/mysqld-exporter:v0.15.1
+    container_name: mysql-exporter
+    command:
+    - --config.my-cnf=/run/secrets/mysql_exporter_cnf
+    - --mysqld.address=zabbix-db:3306
+    - --mysqld.username=${MYSQL_USER}
+    - --no-collect.slave_status
+    - --collect.info_schema.innodb_tablespaces
+    - --collect.info_schema.innodb_metrics
+    - --collect.info_schema.query_response_time
+    - --collect.info_schema.tables
+    ports:
+    - 9104:9104
+    secrets:
+      - mysql_exporter_cnf
+    depends_on:
+      zabbix-db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:9104/metrics || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+    - monitoring
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:1.1.0
+    container_name: nginx-exporter
+    network_mode: host
+    command:
+    - --nginx.scrape-uri=http://localhost/nginx_status
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.25'
+          memory: 64M
 volumes:
-  zabbix-db-data:
-  zabbix-server-data:
-  grafana-data:
-  zabbix-alertscripts:
-  zabbix-externalscripts:
-  zabbix-export:
-  zabbix-snmptraps:
-  prometheus-data:
-
-
+  zabbix-db-data: null
+  zabbix-server-data: null
+  zabbix-alertscripts: null
+  zabbix-externalscripts: null
+  zabbix-export: null
+  zabbix-snmptraps: null
+  grafana-data: null
+  prometheus-data: null
+  alertmanager-data: null
+  loki-data: null
+secrets:
+  mysql_password:
+    file: ./secrets/mysql_password.txt
+  mysql_root_password:
+    file: ./secrets/mysql_root_password.txt
+  mysql_exporter_cnf:
+    file: ./secrets/mysql_exporter.cnf
 networks:
   monitoring:
     driver: bridge
