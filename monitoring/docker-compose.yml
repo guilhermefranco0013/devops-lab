@@ -427,3 +427,5 @@ networks:
   monitoring:
     driver: bridge
 
+
+#Test deploying monitoring stack with docker compose in CI pipeline

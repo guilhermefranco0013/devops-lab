@@ -56,13 +56,13 @@ jobs:
 
           docker compose config > /dev/null
 
-      - name: Pull latest monitoring images
+      - name: Build local monitoring images
         run: |
           set -euo pipefail
 
           docker compose \
             -p monitoring \
-            pull
+            build --no-cache
 
       - name: Deploy monitoring stack
         run: |
